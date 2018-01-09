@@ -212,6 +212,21 @@ export class Point {
 
 	}
 
+	copy(other) {
+
+		this.x = other.x
+		this.y = other.y
+
+		return this
+
+	}
+
+	clone() {
+
+		return new Point(this.x, this.y)
+
+	}
+
 	getLength() {
 
 		return Math.sqrt(this.x * this.x + this.y * this.y)
@@ -237,21 +252,6 @@ export class Point {
 		this.y /= length
 
 		return this
-
-	}
-
-	copy(other) {
-
-		this.x = other.x
-		this.y = other.y
-
-		return this
-
-	}
-
-	clone() {
-
-		return new Point(this.x, this.y)
 
 	}
 
@@ -525,6 +525,18 @@ export class Shape {
 
 
 
+
+
+export function paramsHasProps(params, template) {
+
+	for (let k in template)
+		if (typeof params[k] !== template[k])
+			return false
+
+	return true
+
+}
+
 /**
  * 
  * AABB: Axis-Aligned minimum Bounding Box.
@@ -545,7 +557,7 @@ export class AABB extends Shape {
 
 	}
 
-	set(ax, ay, bx, by) {
+	setXY(ax, ay, bx, by) {
 
 		this.ax = ax
 		this.ay = ay
@@ -555,6 +567,46 @@ export class AABB extends Shape {
 		return this
 
 	}
+
+	copy(other) {
+
+		this.ax = other.ax
+		this.ay = other.ay
+		this.bx = other.bx
+		this.by = other.by
+
+		return this
+
+	}
+
+	clone() {
+
+		return new AABB(this.ax, this.ay, this.bx, this.by)
+
+	}
+
+	set(params) {
+
+		if (paramsHasProps(params, { x: 'number', y: 'number', width: 'number', height: 'number' })) {
+
+			let dx = params.pivotX ? -params.pivotX * params.width : 0
+			let dy = params.pivotY ? -params.pivotY * params.height : 0
+
+			console.log(dx, dy)
+
+			this.ax = params.x + dx
+			this.ay = params.y + dy
+			this.bx = this.ax + params.width
+			this.by = this.ay + params.height
+
+		}
+
+		return this
+
+	}
+
+	get width() { return this.bx - this.ax }
+	get height() { return this.by - this.ay }
 
 	inflate(deltaX, deltaY) {
 
@@ -579,7 +631,7 @@ export class AABB extends Shape {
 	draw(ctx, stroke = 'black', fill = null) {
 
 		ctx.beginPath()
-		ctx.rect(this.ax, this.ay, this.bx - this.ax, this.by - this.ay)
+		ctx.rect(this.ax, this.ay, this.width, this.height)
 
 		super.draw(ctx, stroke, fill)
 

@@ -44,9 +44,14 @@ export let P1 = new geomjs.Point(300, 300)
 
 export let mouse = new geomjs.Point()
 
-export let aabb = new geomjs.AABB(-innerWidth / 2, -innerHeight / 2, innerWidth / 2, innerHeight / 2)
+export let aabb = new geomjs.AABB().set({ x: -200, y: 200, width: 100, height: 50, pivotX:.5, pivotY:.5 })
+export let aabb2 = new geomjs.AABB().set({ x: -150, y: 260, width: 100, height: 50, pivotX:.5, pivotY:.5 })
+export let aabb3 = new geomjs.AABB().set({ x: -200, y: 150, width: 50, height: 50, pivotX:.5, pivotY:.5 })
+export let aabb4 = new geomjs.AABB().copy(aabb).union(aabb2, aabb3).inflate(10)
 
-aabb.inflate(-20)
+export let aabbBounds = new geomjs.AABB(-innerWidth / 2, -innerHeight / 2, innerWidth / 2, innerHeight / 2)
+
+aabbBounds.inflate(-20)
 
 export let line1 = new geomjs.Line(-200, -300, 300, -50, geomjs.LineType.SEGMENT)
 export let line2 = new geomjs.Line(-100, -200, 300, -150)
@@ -71,6 +76,14 @@ function render() {
 	t += 1 / 60
 
 	ctx.clearRect(-innerWidth / 2, -innerHeight / 2, innerWidth, innerHeight)
+
+
+
+	aabb.draw(ctx, '#000000', '#00000022')
+	aabb2.draw(ctx, '#000000', '#00000022')
+	aabb3.draw(ctx, '#000000', '#00000022')
+	aabb4.draw(ctx, '#000000', '#00000022')
+
 	triangle.draw(ctx, '#000000', '#00000022')
 	triangle.A.toCircle(10).draw(ctx)
 	triangle.B.toCircle(4).draw(ctx)
@@ -85,7 +98,7 @@ function render() {
 	sector.draw(ctx, '#000000', '#00000022')
 
 	line1.draw(ctx)
-	line2.draw(ctx, { aabb })
+	line2.draw(ctx, { aabbBounds })
 
 	let I, line2_refl
 
@@ -109,7 +122,7 @@ function render() {
 
 		ctx.lineWidth = 1
 
-		line2_refl = line2.reflection(line1).draw(ctx, { aabb })
+		line2_refl = line2.reflection(line1).draw(ctx, { aabbBounds })
 
 	}
 
@@ -134,7 +147,7 @@ function render() {
 
 	}
 
-	for (let I of line2.intersectionWithAABB(aabb))
+	for (let I of line2.intersectionWithAABB(aabbBounds))
 		I.point.draw(ctx, { shape: 'dot' })
 
 	for (let p of mouseSample)
