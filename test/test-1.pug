@@ -1,0 +1,33 @@
+html
+	head
+		link(rel='stylesheet' href='/reset.css')
+		style
+			:sass
+				canvas, .front
+					position: absolute
+					left: 0
+					top: 0
+					width: 100%
+					height: 100%
+
+				.front
+					padding: 30px
+					font-family: monospace
+					color: #242424
+
+	body
+		canvas
+		.front
+			p.particlesCount 
+				span particles &#x2248; 
+				span.value
+			p.particlesUpdate 
+				span particles update &#x2248; 
+				span.value
+			p.renderTime 
+				span render &#x2248; 
+				span.value
+
+		script(type='module').
+			import * as main from './test-1.js'
+			Object.assign(window, main)

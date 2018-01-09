@@ -1,0 +1,14 @@
+extends test-base
+
+block head
+
+	style
+		:sass
+			body
+				background-color: #ffe9a5
+
+block body
+
+	script(type='module').
+		import * as main from './test-perf.js'
+		Object.assign(window, main)
