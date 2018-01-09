@@ -592,8 +592,6 @@ export class AABB extends Shape {
 			let dx = params.pivotX ? -params.pivotX * params.width : 0
 			let dy = params.pivotY ? -params.pivotY * params.height : 0
 
-			console.log(dx, dy)
-
 			this.ax = params.x + dx
 			this.ay = params.y + dy
 			this.bx = this.ax + params.width
