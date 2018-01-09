@@ -304,6 +304,15 @@ export class Point {
 
 	}
 
+	sub(other, scalar = 1) {
+
+		this.x += -other.x * scalar
+		this.y += -other.y * scalar
+
+		return this
+
+	}
+
 	multiply(scalar) {
 
 		this.x *= scalar
@@ -563,6 +572,28 @@ export class AABB extends Shape {
 		this.ay = ay
 		this.bx = bx
 		this.by = by
+
+		return this
+
+	}
+
+	setNull() {
+
+		this.ax = 0
+		this.ay = 0
+		this.bx = 0
+		this.by = 0
+
+		return this
+
+	}
+
+	setVoid() {
+
+		this.ax = Infinity
+		this.ay = Infinity
+		this.bx = -Infinity
+		this.by = -Infinity
 
 		return this
 
