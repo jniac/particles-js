@@ -1,3 +1,11 @@
+/**
+ * geom.js
+ * https://github.com/jniac/particles-js
+ *
+ * Geometry class for common geometry operations.
+ * Point, Line, AABB, Triangle, Quad, Circle, Sector etc.
+ * 
+ */
 
 export function moveTowards(x, y, targetX, targetY, distance) {
 
@@ -233,6 +241,18 @@ export class Point {
 
 	}
 
+	getAngle(degree = true) {
+
+		return Math.atan2(this.y, this.x) * (degree ?  180 / Math.PI : 1)
+
+	}
+
+	isNull() {
+
+		return this.x === 0 && this.y === 0
+
+	}
+
 	get length() { return this.getLength() }
 
 	offset(x, y) {
@@ -244,12 +264,12 @@ export class Point {
 
 	}
 
-	normalize() {
+	normalize(length = 1) {
 
-		let length = this.getLength()
+		length /= this.getLength()
 
-		this.x /= length
-		this.y /= length
+		this.x *= length
+		this.y *= length
 
 		return this
 
@@ -263,16 +283,22 @@ export class Point {
 
 				[this.x, this.y] = args[0]
 
+				return this
+
 			}
 			
-			if (args[0].hasOwnProperty('x') && args[0].hasOwnProperty('y')) {
+			// { x, y }
+			if ('x' in args[0] && 'y' in args[0]) {
 
 				this.x = args[0].x
 				this.y = args[0].y
 
+				return this
+
 			}
 
-			if (args[0].hasOwnProperty('length') && args[0].hasOwnProperty('angle')) {
+			// { angle, length }
+			if ('length' in args[0] && 'angle' in args[0]) {
 
 				let { length, angle } = args[0]
 
@@ -280,6 +306,22 @@ export class Point {
 
 				this.x = length * Math.cos(angle)
 				this.y = length * Math.sin(angle)
+
+				return this
+
+			}
+
+			// { angle, length = 1 }
+			if ('angle' in args[0]) {
+
+				let { angle } = args[0]
+
+				angle *= Math.PI / 180
+
+				this.x = Math.cos(angle)
+				this.y = Math.sin(angle)
+
+				return this
 
 			}
 
@@ -353,6 +395,12 @@ export class Point {
 	toCircle(radius) {
 
 		return new Circle(this.x, this.y, radius)
+
+	}
+
+	toString(precision = 1) {
+
+		return `Point(${this.x.toFixed(precision)}, ${this.y.toFixed(precision)})`
 
 	}
 
@@ -555,6 +603,8 @@ export function paramsHasProps(params, template) {
  */
 export class AABB extends Shape {
 	
+	static get(...args) { return new AABB().set(...args) }
+
 	constructor(ax = 0, ay = 0, bx = 1, by = 1) {
 
 		super()
@@ -637,6 +687,17 @@ export class AABB extends Shape {
 	get width() { return this.bx - this.ax }
 	get height() { return this.by - this.ay }
 
+	offset(x, y) {
+
+		this.ax += x
+		this.ay += y
+		this.bx += x
+		this.by += y
+		
+		return this
+
+	}
+
 	inflate(deltaX, deltaY) {
 
 		if (deltaY === undefined)
@@ -654,6 +715,12 @@ export class AABB extends Shape {
 	containsXY(x, y) {
 
 		return x >= this.ax && x <= this.bx && y >= this.ay && y <= this.by
+
+	}
+
+	randomPoint() {
+
+		return new Point(this.ax + (this.bx - this.ax) * Math.random(), this.ay + (this.by - this.ay) * Math.random())
 
 	}
 
