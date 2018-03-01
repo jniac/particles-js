@@ -230,6 +230,18 @@ export class Point {
 
 	}
 
+	/**
+	 * Convenient getter inspired by GLSL (eg: [vec4].xz)
+	 */
+	get xy() { return [this.x, this.y] }
+	set xy(value) { [this.x, this.y] = value }
+
+	/**
+	 * Convenient getter inspired by GLSL (eg: [vec4].xz)
+	 */
+	get yx() { return [this.y, this.x] }
+	set yx(value) { [this.y, this.x] = value }
+
 	copy(other) {
 
 		this.x = other.x
