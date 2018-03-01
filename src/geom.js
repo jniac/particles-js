@@ -191,9 +191,15 @@ export function decomposeUV(src, dest) {
 
 
 
-function safeZero(x) {
+function safeZero(x, almostZero = 2 * Number.EPSILON) {
 
-	return x < Number.EPSILON && x > -Number.EPSILON ? 0 : x  
+	return x < almostZero && x > -almostZero ? 0 : x  
+
+}
+
+function safeEquals(a, b, almostZero = 2 * Number.EPSILON) {
+
+	return safeZero(b - a, almostZero) === 0
 
 }
 
@@ -236,6 +242,15 @@ export class Point {
 	clone() {
 
 		return new Point(this.x, this.y)
+
+	}
+
+	equals(other, safe = true) {
+
+		if (safe)
+			return safeEquals(this.x, other.x) && safeEquals(this.y, other.y)
+
+		return this.x === other.x && this.y === other.y
 
 	}
 
