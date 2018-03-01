@@ -191,7 +191,11 @@ export function decomposeUV(src, dest) {
 
 
 
+function safeZero(x) {
 
+	return x < Number.EPSILON && x > -Number.EPSILON ? 0 : x  
+
+}
 
 export class Point {
 
@@ -241,6 +245,12 @@ export class Point {
 
 	}
 
+	getTan() {
+
+		return this.y / this.x
+
+	}
+
 	getAngle(degree = true) {
 
 		return Math.atan2(this.y, this.x) * (degree ?  180 / Math.PI : 1)
@@ -270,6 +280,25 @@ export class Point {
 
 		this.x *= length
 		this.y *= length
+
+		return this
+
+	}
+
+	/**
+	 * Convert the point to a Cardinal Point, eg:
+	 * (2, 1) => (1, 0)
+	 * (-1, -3) => (0, -1)
+	 * https://en.wikipedia.org/wiki/Cardinal_direction
+	 *
+	 * @param subdivision the number of Cardinal (4: N,E,S,W, 8: N,NE,E,SE,S,SW,W,NW, etc.), ideally should a power of two >= 4
+	 */
+	cardinalize(subdivision = 4) {
+
+		let angle = Math.round(Math.atan2(this.y, this.x) * subdivision / Math.PI / 2) / subdivision * Math.PI * 2
+
+		this.x = safeZero(Math.cos(angle))
+		this.y = safeZero(Math.sin(angle))
 
 		return this
 
