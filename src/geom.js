@@ -335,28 +335,30 @@ export class Point {
 
 		if (args.length === 1) {
 
-			if (args[0] instanceof Array && args[0].length == 2) {
+			let arg  = args[0]
 
-				[this.x, this.y] = args[0]
+			if (arg instanceof Array && arg.length == 2) {
+
+				[this.x, this.y] = arg
 
 				return this
 
 			}
 
 			// { x, y }
-			if ('x' in args[0] && 'y' in args[0]) {
+			if ('x' in arg && 'y' in arg) {
 
-				this.x = args[0].x
-				this.y = args[0].y
+				this.x = arg.x
+				this.y = arg.y
 
 				return this
 
 			}
 
 			// { angle, length }
-			if ('length' in args[0] && 'angle' in args[0]) {
+			if ('length' in arg && 'angle' in arg) {
 
-				let { length, angle } = args[0]
+				let { length, angle } = arg
 
 				angle *= Math.PI / 180
 
@@ -368,9 +370,9 @@ export class Point {
 			}
 
 			// { angle, length = 1 }
-			if ('angle' in args[0]) {
+			if ('angle' in arg) {
 
-				let { angle } = args[0]
+				let { angle } = arg
 
 				angle *= Math.PI / 180
 
