@@ -4,7 +4,7 @@
  *
  * Geometry class for common geometry operations.
  * Point, Line, AABB, Triangle, Quad, Circle, Sector etc.
- * 
+ *
  */
 
 export function moveTowards(x, y, targetX, targetY, distance) {
@@ -31,7 +31,7 @@ export function triangeIsDirect(ax, ay, bx, by, cx, cy) {
 
 /**
  * A point is inside a triangle if he is always on the same side (left or right) of each triangle's side (AB, BC, CA)
- * if det > 0: ABC is direct (counterclockwise) 
+ * if det > 0: ABC is direct (counterclockwise)
  * else: ABC is indirect (clockwise)
 
  * op - : 20
@@ -43,7 +43,7 @@ export function triangleContains(ax, ay, bx, by, cx, cy, x, y) {
 
 	return  det * ((bx - ax) * (y - ay) - (by - ay) * (x - ax)) > 0 &&
 			det * ((cx - bx) * (y - by) - (cy - by) * (x - bx)) > 0 &&
-			det * ((ax - cx) * (y - cy) - (ay - cy) * (x - cx)) > 0	
+			det * ((ax - cx) * (y - cy) - (ay - cy) * (x - cx)) > 0
 
 }
 
@@ -95,16 +95,16 @@ export function sectorContains(cx, cy, radius, angleStart, angleEnd, x, y) {
 	let detEnd = dx * Math.sin(angleEnd * Math.PI / 180) - dy * Math.cos(angleEnd * Math.PI / 180)
 
 	return angleEnd - angleStart < 180 ?
-		detStart > 0 && detEnd < 0 : 
+		detStart > 0 && detEnd < 0 :
 		detStart > 0 || detEnd < 0
 
 }
 
 /**
- * A line is defined by two pairs of coordinates (P, V), 
+ * A line is defined by two pairs of coordinates (P, V),
  * P is the origin of the line,
  * V is the direction of the line.
- * 
+ *
  * k1 = det(v2, p2p1) / det(v1,v2)
  * k2 = det(v1, p1p2) / det(v2,v1)
  */
@@ -193,7 +193,7 @@ export function decomposeUV(src, dest) {
 
 function safeZero(x, almostZero = 2 * Number.EPSILON) {
 
-	return x < almostZero && x > -almostZero ? 0 : x  
+	return x < almostZero && x > -almostZero ? 0 : x
 
 }
 
@@ -318,7 +318,7 @@ export class Point {
 	 * (-1, -3) => (0, -1)
 	 * https://en.wikipedia.org/wiki/Cardinal_direction
 	 *
-	 * @param subdivision the number of Cardinal (4: N,E,S,W, 8: N,NE,E,SE,S,SW,W,NW, etc.), ideally should a power of two >= 4
+	 * @param subdivision the number of Cardinal (4: N,E,S,W, 8: N,NE,E,SE,S,SW,W,NW, etc.), ideally should be a power of two >= 4
 	 */
 	cardinalize(subdivision = 4) {
 
@@ -342,7 +342,7 @@ export class Point {
 				return this
 
 			}
-			
+
 			// { x, y }
 			if ('x' in args[0] && 'y' in args[0]) {
 
@@ -517,7 +517,7 @@ export class Line {
 	intersectionWithAABB(aabb) {
 
 		let I, a = []
-		
+
 		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.ax, aabb.ay, aabb.bx - aabb.ax, 0)
 
 		if (I.k2 >= 0 && I.k2 <= 1)
@@ -582,7 +582,7 @@ export class Line {
 		ctx.beginPath()
 
 		return this
-		
+
 	}
 
 }
@@ -651,14 +651,14 @@ export function paramsHasProps(params, template) {
 }
 
 /**
- * 
+ *
  * AABB: Axis-Aligned minimum Bounding Box.
- * 
+ *
  * see: https://en.wikipedia.org/wiki/Minimum_bounding_box#Axis-aligned_minimum_bounding_box
  *
  */
 export class AABB extends Shape {
-	
+
 	static get(...args) { return new AABB().set(...args) }
 
 	constructor(ax = 0, ay = 0, bx = 1, by = 1) {
@@ -749,7 +749,7 @@ export class AABB extends Shape {
 		this.ay += y
 		this.bx += x
 		this.by += y
-		
+
 		return this
 
 	}
@@ -1097,22 +1097,3 @@ export class Sector extends Shape {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
