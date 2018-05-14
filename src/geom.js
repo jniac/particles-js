@@ -214,6 +214,18 @@ export class Point {
 
 	}
 
+	static add(A, B, scalar = 1) {
+
+		return new Point().copy(A).add(B, scalar)
+
+	}
+
+	static sub(A, B, scalar = 1) {
+
+		return new Point().copy(A).sub(B, scalar)
+
+	}
+
 	constructor(x = 0, y = 0) {
 
 		this.x = x
