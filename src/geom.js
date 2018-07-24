@@ -25,7 +25,7 @@ export function pointMoveTowards(point, target, distance) {
 
 export function triangeIsDirect(ax, ay, bx, by, cx, cy) {
 
-	return (bx - ax) * (cy - ay) - (by - ay) * (cy - ay) >= 0
+	return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax) >= 0
 
 }
 
@@ -39,7 +39,7 @@ export function triangeIsDirect(ax, ay, bx, by, cx, cy) {
  */
 export function triangleContains(ax, ay, bx, by, cx, cy, x, y) {
 
-	let det = (bx - ax) * (cy - ay) - (by - ay) * (cy - ay)
+	let det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
 
 	return  det * ((bx - ax) * (y - ay) - (by - ay) * (x - ax)) > 0 &&
 			det * ((cx - bx) * (y - by) - (cy - by) * (x - bx)) > 0 &&
@@ -49,7 +49,7 @@ export function triangleContains(ax, ay, bx, by, cx, cy, x, y) {
 
 export function quadContains(ax, ay, bx, by, cx, cy, dx, dy, x, y) {
 
-	let det = (bx - ax) * (cy - ay) - (by - ay) * (cy - ay)
+	let det = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
 
 	return  det * ((bx - ax) * (y - ay) - (by - ay) * (x - ax)) > 0 &&
 			det * ((cx - bx) * (y - by) - (cy - by) * (x - bx)) > 0 &&
