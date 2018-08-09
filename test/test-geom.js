@@ -55,6 +55,7 @@ aabbBounds.inflate(-20)
 
 export let line1 = new geomjs.Line(-200, -300, 300, -50, geomjs.LineType.SEGMENT)
 export let line2 = new geomjs.Line(-100, -200, 300, -150)
+export let line3 = new geomjs.Line(100, -250, 100, 200, geomjs.LineType.SEGMENT)
 
 let n = 20
 export let mouseSample = []
@@ -98,7 +99,11 @@ function render() {
 	sector.draw(ctx, '#000000', '#00000022')
 
 	line1.draw(ctx)
-	line2.draw(ctx, { aabbBounds })
+	line2.draw(ctx, { aabb:aabbBounds })
+	line3.draw(ctx)
+
+	let nearest = line3.nearest(mouse)
+	nearest.draw(ctx, { shape: 'dot' })
 
 	let I, line2_refl
 
@@ -126,7 +131,7 @@ function render() {
 
 	}
 
-	I = geomjs.intersectionLineCircle(line2.px, line2.py, line2.vx, line2.vy, circle.x, circle.y, circle.radius) || 
+	I = geomjs.intersectionLineCircle(line2.px, line2.py, line2.vx, line2.vy, circle.x, circle.y, circle.radius) ||
 		line2_refl && geomjs.intersectionLineCircle(line2_refl.px, line2_refl.py, line2_refl.vx, line2_refl.vy, circle.x, circle.y, circle.radius)
 
 	if (I) {
@@ -150,12 +155,17 @@ function render() {
 	for (let I of line2.intersectionWithAABB(aabbBounds))
 		I.point.draw(ctx, { shape: 'dot' })
 
-	for (let p of mouseSample)
+	for (let p of mouseSample) {
+
+		let contained = triangle.contains(p) || circle.contains(p) || quad.contains(p) || sector.contains(p)
+
 		p.draw(ctx, {
 			shape: 'dot',
-			dotSize: 2.5,
+			dotSize: contained ? 4 : 2.5,
 			color: triangle.contains(p) ? '#8600FF' : circle.contains(p) ? 'white' : quad.contains(p) ? 'red' : sector.contains(p) ? 'cyan' : 'black',
 		})
+
+	}
 
 	P.draw(ctx)
 

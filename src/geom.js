@@ -528,28 +528,42 @@ export class Line {
 
 	}
 
+	nearest(point) {
+
+		let I = intersectionLineLine(this.px, this.py, this.vx, this.vy, point.x, point.y, -this.vy, this.vx)
+
+		if (this.type > LineType.LINE && I.k1 < 0)
+			return new Point(this.px, this.py)
+
+		if (this.type === LineType.SEGMENT && I.k1 > 1)
+			return new Point(this.px + this.vx, this.py + this.vy)
+
+		return I.point
+
+	}
+
 	intersectionWithAABB(aabb) {
 
 		let I, a = []
 
 		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.ax, aabb.ay, aabb.bx - aabb.ax, 0)
 
-		if (I.k2 >= 0 && I.k2 <= 1)
+		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
 		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.ax, aabb.ay, 0, aabb.by - aabb.ay)
 
-		if (I.k2 >= 0 && I.k2 <= 1)
+		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
 		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.bx, aabb.by, aabb.ax - aabb.bx, 0)
 
-		if (I.k2 >= 0 && I.k2 <= 1)
+		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
 		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.bx, aabb.by, 0, aabb.ay - aabb.by)
 
-		if (I.k2 >= 0 && I.k2 <= 1)
+		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
 		return a.sort((A, B) => A.k1 - B.k1).filter(I => this.type === LineType.LINE ? true : this.type === LineType.RAY ? I.k1 >= 0 : (I.k1 >= 0 && I.k1 <= 1))
