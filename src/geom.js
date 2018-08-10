@@ -530,13 +530,14 @@ export class Line {
 
 	nearest(point) {
 
-		let I = intersectionLineLine(this.px, this.py, this.vx, this.vy, point.x, point.y, -this.vy, this.vx)
+		let { px, py, vx, vy, type } = this
+		let I = intersectionLineLine(px, py, vx, vy, point.x, point.y, -vy, vx)
 
-		if (this.type > LineType.LINE && I.k1 < 0)
-			return new Point(this.px, this.py)
+		if (type > LineType.LINE && I.k1 < 0)
+			return new Point(px, py)
 
-		if (this.type === LineType.SEGMENT && I.k1 > 1)
-			return new Point(this.px + this.vx, this.py + this.vy)
+		if (type === LineType.SEGMENT && I.k1 > 1)
+			return new Point(px + vx, py + vy)
 
 		return I.point
 
@@ -545,28 +546,29 @@ export class Line {
 	intersectionWithAABB(aabb) {
 
 		let I, a = []
+		let { px, py, vx, vy, type } = this
 
-		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.ax, aabb.ay, aabb.bx - aabb.ax, 0)
-
-		if (I && I.k2 >= 0 && I.k2 <= 1)
-			a.push(I)
-
-		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.ax, aabb.ay, 0, aabb.by - aabb.ay)
+		I = intersectionLineLine(px, py, vx, vy, aabb.ax, aabb.ay, aabb.bx - aabb.ax, 0)
 
 		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
-		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.bx, aabb.by, aabb.ax - aabb.bx, 0)
+		I = intersectionLineLine(px, py, vx, vy, aabb.ax, aabb.ay, 0, aabb.by - aabb.ay)
 
 		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
-		I = intersectionLineLine(this.px, this.py, this.vx, this.vy, aabb.bx, aabb.by, 0, aabb.ay - aabb.by)
+		I = intersectionLineLine(px, py, vx, vy, aabb.bx, aabb.by, aabb.ax - aabb.bx, 0)
 
 		if (I && I.k2 >= 0 && I.k2 <= 1)
 			a.push(I)
 
-		return a.sort((A, B) => A.k1 - B.k1).filter(I => this.type === LineType.LINE ? true : this.type === LineType.RAY ? I.k1 >= 0 : (I.k1 >= 0 && I.k1 <= 1))
+		I = intersectionLineLine(px, py, vx, vy, aabb.bx, aabb.by, 0, aabb.ay - aabb.by)
+
+		if (I && I.k2 >= 0 && I.k2 <= 1)
+			a.push(I)
+
+		return a.sort((A, B) => A.k1 - B.k1).filter(I => type === LineType.LINE ? true : type === LineType.RAY ? I.k1 >= 0 : (I.k1 >= 0 && I.k1 <= 1))
 
 	}
 
@@ -581,6 +583,8 @@ export class Line {
 
 	draw(ctx, { color = '#000', size = 6, aabb = null } = {}) {
 
+		let { px, py, vx, vy, type } = this
+
 		ctx.beginPath()
 
 		if (aabb) {
@@ -592,17 +596,17 @@ export class Line {
 
 		} else {
 
-			ctx.moveTo(this.px, this.py)
-			ctx.lineTo(this.px + this.vx, this.py + this.vy)
+			ctx.moveTo(px, py)
+			ctx.lineTo(px + vx, py + vy)
 
 		}
 
 		let v = this.V.normalize()
-		ctx.moveTo(this.px + v.y * size, this.py - v.x * size)
-		ctx.lineTo(this.px - v.y * size, this.py + v.x * size)
-		ctx.moveTo(this.px + this.vx + v.y * size - v.x * size, this.py + this.vy - v.x * size - v.y * size)
-		ctx.lineTo(this.px + this.vx, this.py + this.vy)
-		ctx.lineTo(this.px + this.vx - v.y * size - v.x * size, this.py + this.vy + v.x * size - v.y * size)
+		ctx.moveTo(px + v.y * size, py - v.x * size)
+		ctx.lineTo(px - v.y * size, py + v.x * size)
+		ctx.moveTo(px + vx + v.y * size - v.x * size, py + vy - v.x * size - v.y * size)
+		ctx.lineTo(px + vx, py + vy)
+		ctx.lineTo(px + vx - v.y * size - v.x * size, py + vy + v.x * size - v.y * size)
 
 		ctx.strokeStyle = color
 		ctx.stroke()
