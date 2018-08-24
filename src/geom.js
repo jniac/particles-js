@@ -478,13 +478,13 @@ export class Point {
 
 
 
-export const LineType = {
+export const LineType = Object.freeze({
 
 	LINE: 0,
 	RAY: 1,
 	SEGMENT: 2,
 
-}
+})
 
 export class Line {
 
@@ -540,6 +540,25 @@ export class Line {
 			return new Point(px + vx, py + vy)
 
 		return I.point
+
+	}
+
+	distanceToNearest(point) {
+
+		let { x, y } = this.nearest(point)
+
+		x += -point.x
+		y += -point.y
+
+		return Math.sqrt(x * x + y * y)
+
+	}
+
+	lineToNearest(point) {
+
+		let { x, y } = this.nearest(point)
+
+		return new Line(point.x, point.y, x - point.x, y - point.y)
 
 	}
 
