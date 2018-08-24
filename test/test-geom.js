@@ -102,8 +102,12 @@ function render() {
 	line2.draw(ctx, { aabb:aabbBounds })
 	line3.draw(ctx)
 
-	let nearest = line3.nearest(mouse)
-	nearest.draw(ctx, { shape: 'dot' })
+	let nearestPoint = line3.nearestPoint(mouse)
+	nearestPoint.draw(ctx, { shape: 'dot' })
+
+	let distance = line3.distance(mouse)
+	console.log(distance)
+	console.log('signedDistance', line3.signedDistance(mouse))
 
 	let I, line2_refl
 

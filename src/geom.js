@@ -7,6 +7,18 @@
  *
  */
 
+export function dotProduct(ux, uy, vx, vy) {
+
+	return ux * vx + uy * vy
+
+}
+
+export function crossProduct(ux, uy, vx, vy) {
+
+	return ux * vy - uy * vx
+
+}
+
 export function moveTowards(x, y, targetX, targetY, distance) {
 
 		let a = Math.atan2(targetY - y, targetX - x)
@@ -119,8 +131,10 @@ export function intersectionLineLine(px1, py1, vx1, vy1, px2, py2, vx2, vy2) {
 	let px = px2 - px1
 	let py = py2 - py1
 
-	let k1 = -(vx2 * py - vy2 * px) / det
-	let k2 = (vx1 * py - vy1 * px) / -det
+	// let k1 = -(vx2 * py - vy2 * px) / det
+	// let k2 = (vx1 * py - vy1 * px) / -det
+	let k1 = (px * vy2 - py * vx2) / det
+	let k2 = (px * vy1 - py * vx1) / det
 
 	return { k1, k2, point: new Point(px1 + vx1 * k1, py1 + vy1 * k1) }
 
@@ -434,7 +448,7 @@ export class Point {
 
 	}
 
-	draw(ctx, { color = 'black', shape = 'cross', crossSize = 4, dotSize = 6 } = {}) {
+	draw(ctx, { color = 'black', shape = 'cross', crossSize = 4, dotSize = 6, circleSize = 8 } = {}) {
 
 		ctx.closePath()
 
@@ -453,6 +467,12 @@ export class Point {
 			ctx.ellipse(this.x, this.y, dotSize / 2, dotSize / 2, 0, 0, 2 * Math.PI)
 			ctx.fillStyle = color
 			ctx.fill()
+
+		} else if (shape === 'circle') {
+
+			ctx.ellipse(this.x, this.y, circleSize / 2, circleSize / 2, 0, 0, 2 * Math.PI)
+			ctx.strokeStyle = color
+			ctx.stroke()
 
 		}
 
@@ -528,24 +548,57 @@ export class Line {
 
 	}
 
-	nearest(point) {
+	// nearestPoint(point) {
+	//
+	// 	let { px, py, vx, vy, type } = this
+	// 	let I = intersectionLineLine(px, py, vx, vy, point.x, point.y, -vy, vx)
+	//
+	// 	if (type > LineType.LINE && I.k1 < 0)
+	// 		return new Point(px, py)
+	//
+	// 	if (type === LineType.SEGMENT && I.k1 > 1)
+	// 		return new Point(px + vx, py + vy)
+	//
+	// 	return I.point
+	//
+	// }
+
+	nearestPoint(point) {
 
 		let { px, py, vx, vy, type } = this
-		let I = intersectionLineLine(px, py, vx, vy, point.x, point.y, -vy, vx)
 
-		if (type > LineType.LINE && I.k1 < 0)
-			return new Point(px, py)
+		// let k = ((point.x - px) * vx + (point.y - py) * vy) / (vx * vx + vy * vy)
+		let k = dotProduct(point.x - px, point.y - py, vx, vy) / (vx * vx + vy * vy)
 
-		if (type === LineType.SEGMENT && I.k1 > 1)
-			return new Point(px + vx, py + vy)
+		// clamp RAY & SEGMENT
+		if (type > LineType.LINE && k < 0)
+			k = 0
 
-		return I.point
+		// clamp SEGMENT
+		if (type === LineType.SEGMENT && k > 1)
+			k = 1
+
+		return new Point(px + k * vx, py + k * vy)
 
 	}
 
-	distanceToNearest(point) {
+	/**
+	 * signedDistance(point) does not take into account the type of Line
+	 */
+	signedDistance(point) {
 
-		let { x, y } = this.nearest(point)
+		// cf nearestPoint() above
+		let { px, py, vx, vy } = this
+
+		let k = crossProduct(point.x - px, point.y - py, vx, vy) / (vx * vx + vy * vy)
+
+		return Math.sqrt(vx * vx + vy * vy) * k
+
+	}
+
+	distance(point) {
+
+		let { x, y } = this.nearestPoint(point)
 
 		x += -point.x
 		y += -point.y
@@ -554,9 +607,9 @@ export class Line {
 
 	}
 
-	lineToNearest(point) {
+	lineToNearestPoint(point) {
 
-		let { x, y } = this.nearest(point)
+		let { x, y } = this.nearestPoint(point)
 
 		return new Line(point.x, point.y, x - point.x, y - point.y)
 
