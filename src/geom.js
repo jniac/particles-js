@@ -62,7 +62,7 @@ export function quadContains(ax, ay, bx, by, cx, cy, dx, dy, x, y) {
  * op - : 18
  * op * : 10
  */
-export function triangleContains2() {
+export function triangleContains2(ax, ay, bx, by, cx, cy, x, y) {
 
 	let abx = bx - ax
 	let aby = by - ay
