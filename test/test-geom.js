@@ -106,8 +106,9 @@ function render() {
 	nearestPoint.draw(ctx, { shape: 'dot' })
 
 	let distance = line3.distance(mouse)
-	console.log(distance)
-	console.log('signedDistance', line3.signedDistance(mouse))
+	ctx.font = '12px monospace'
+	let str = `signedDistance: ${line3.signedDistance(mouse).toFixed(1)}, distance: ${line3.distance(mouse).toFixed(1)}`
+	ctx.fillText(str, nearestPoint.x + 10, nearestPoint.y + 2)
 
 	let I, line2_refl
 

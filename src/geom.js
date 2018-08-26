@@ -567,7 +567,6 @@ export class Line {
 
 		let { px, py, vx, vy, type } = this
 
-		// let k = ((point.x - px) * vx + (point.y - py) * vy) / (vx * vx + vy * vy)
 		let k = dotProduct(point.x - px, point.y - py, vx, vy) / (vx * vx + vy * vy)
 
 		// clamp RAY & SEGMENT
@@ -587,12 +586,9 @@ export class Line {
 	 */
 	signedDistance(point) {
 
-		// cf nearestPoint() above
 		let { px, py, vx, vy } = this
 
-		let k = crossProduct(point.x - px, point.y - py, vx, vy) / (vx * vx + vy * vy)
-
-		return Math.sqrt(vx * vx + vy * vy) * k
+		return crossProduct(point.x - px, point.y - py, vx, vy) / Math.sqrt(vx * vx + vy * vy)
 
 	}
 
