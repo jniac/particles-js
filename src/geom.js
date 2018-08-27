@@ -523,6 +523,12 @@ export class Line {
 
 	}
 
+	set(props) {
+
+		Object.assign(this, props)
+
+	}
+
 	intersection(other) {
 
 		let I = intersectionLineLine(this.px, this.py, this.vx, this.vy, other.px, other.py, other.vx, other.vy)
