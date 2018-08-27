@@ -651,6 +651,11 @@ export class Line {
 
 	}
 
+	get p2x() { return this.px + this.vx }
+	set p2x(value) { this.vx = value - this.px }
+	get p2y() { return this.py + this.vy }
+	set p2y(value) { this.vy = value - this.py }
+
 	get P() { return new Point(this.px, this.py) }
 	set P(value) { value = Point.ensure(value); this.px = value.x; this.py = value.y }
 
