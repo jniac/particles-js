@@ -509,8 +509,11 @@ export const LineType = Object.freeze({
 export class Line {
 
 	static get Type() { return LineType }
-	
+
 	constructor(px = 0, py = 0, vx = 1, vy = 0, type = LineType.LINE) {
+
+		if (typeof px === 'object')
+			({ px = 0, py = 0, vx = 1, vy = 0, type = LineType.LINE } = px)
 
 		this.px = px
 		this.py = py
