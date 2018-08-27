@@ -574,11 +574,32 @@ export class Line {
 	//
 	// }
 
-	nearestPoint(point) {
+	/**
+	 * utility, returns 'k' such that line.P + k * line.V === line.projection(M{ x, y })
+	 */
+	projectionGetK({ x, y }) {
 
 		let { px, py, vx, vy, type } = this
 
-		let k = dotProduct(point.x - px, point.y - py, vx, vy) / (vx * vx + vy * vy)
+		return dotProduct(x - px, y - py, vx, vy) / (vx * vx + vy * vy)
+
+	}
+
+	projection({ x, y }) {
+
+		let { px, py, vx, vy, type } = this
+
+		let k = dotProduct(x - px, y - py, vx, vy) / (vx * vx + vy * vy)
+
+		return new Point(px + k * vx, py + k * vy)
+
+	}
+
+	nearestPoint({ x, y }) {
+
+		let { px, py, vx, vy, type } = this
+
+		let k = dotProduct(x - px, y - py, vx, vy) / (vx * vx + vy * vy)
 
 		// clamp RAY & SEGMENT
 		if (type > LineType.LINE && k < 0)
@@ -595,11 +616,11 @@ export class Line {
 	/**
 	 * signedDistance(point) does not take into account the type of Line
 	 */
-	signedDistance(point) {
+	signedDistance({ x, y }) {
 
 		let { px, py, vx, vy } = this
 
-		return crossProduct(point.x - px, point.y - py, vx, vy) / Math.sqrt(vx * vx + vy * vy)
+		return crossProduct(x - px, y - py, vx, vy) / Math.sqrt(vx * vx + vy * vy)
 
 	}
 
@@ -607,8 +628,8 @@ export class Line {
 
 		let { x, y } = this.nearestPoint(point)
 
-		x += -point.x
-		y += -point.y
+		x -= point.x
+		y -= point.y
 
 		return Math.sqrt(x * x + y * y)
 
@@ -655,6 +676,22 @@ export class Line {
 	set p2x(value) { this.vx = value - this.px }
 	get p2y() { return this.py + this.vy }
 	set p2y(value) { this.vy = value - this.py }
+
+	get vLength() {
+
+		let { vx, vy } = this
+
+		return Math.sqrt(vx * vx + vy * vy)
+
+	}
+	set vLength(value) {
+
+		let k = value / this.vLength
+
+		this.vx *= k
+		this.vy *= k
+
+	}
 
 	get P() { return new Point(this.px, this.py) }
 	set P(value) { value = Point.ensure(value); this.px = value.x; this.py = value.y }
