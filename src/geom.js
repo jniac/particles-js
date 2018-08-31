@@ -7,6 +7,9 @@
  *
  */
 
+export const TO_RADIANS = Math.PI / 180
+export const TO_DEGREES = 180 / Math.PI
+
 export function dotProduct(ux, uy, vx, vy) {
 
 	return ux * vx + uy * vy
@@ -103,8 +106,8 @@ export function sectorContains(cx, cy, radius, angleStart, angleEnd, x, y) {
 	if (dx * dx + dy * dy > radius * radius)
 		return false
 
-	let detStart = dx * Math.sin(angleStart * Math.PI / 180) - dy * Math.cos(angleStart * Math.PI / 180)
-	let detEnd = dx * Math.sin(angleEnd * Math.PI / 180) - dy * Math.cos(angleEnd * Math.PI / 180)
+	let detStart = dx * Math.sin(angleStart * TO_RADIANS) - dy * Math.cos(angleStart * TO_RADIANS)
+	let detEnd = dx * Math.sin(angleEnd * TO_RADIANS) - dy * Math.cos(angleEnd * TO_RADIANS)
 
 	return angleEnd - angleStart < 180 ?
 		detStart > 0 && detEnd < 0 :
@@ -306,9 +309,26 @@ export class Point {
 
 	getAngle(degree = true) {
 
-		return Math.atan2(this.y, this.x) * (degree ?  180 / Math.PI : 1)
+		return Math.atan2(this.y, this.x) * (degree ?  TO_DEGREES : 1)
 
 	}
+
+	setAngle(angle, { degree = true } = {}) {
+
+		let length = this.getLength()
+
+		if (degree)
+			angle *= TO_RADIANS
+
+		this.x = length * Math.cos(angle)
+		this.y = length * Math.sin(angle)
+
+		return this
+
+	}
+
+	get angle() { return this.getAngle() }
+	set angle(value) { this.setAngle(value) }
 
 	isNull() {
 
@@ -317,6 +337,7 @@ export class Point {
 	}
 
 	get length() { return this.getLength() }
+	set length(value) { this.normalize(value) }
 
 	offset(x, y) {
 
@@ -386,7 +407,7 @@ export class Point {
 
 				let { length, angle } = arg
 
-				angle *= Math.PI / 180
+				angle *= TO_RADIANS
 
 				this.x = length * Math.cos(angle)
 				this.y = length * Math.sin(angle)
@@ -400,7 +421,7 @@ export class Point {
 
 				let { angle } = arg
 
-				angle *= Math.PI / 180
+				angle *= TO_RADIANS
 
 				this.x = Math.cos(angle)
 				this.y = Math.sin(angle)
@@ -448,29 +469,49 @@ export class Point {
 
 	}
 
+	rotate(angle, { degree = true } = {}) {
+
+		if (degree)
+			angle *= TO_RADIANS
+
+		let { x, y } = this
+
+		angle += Math.atan2(y, x)
+
+		let length = Math.sqrt(x * x + y * y)
+
+		this.x = length * Math.cos(angle)
+		this.y = length * Math.sin(angle)
+
+		return this
+
+	}
+
 	draw(ctx, { color = 'black', shape = 'cross', crossSize = 4, dotSize = 6, circleSize = 8 } = {}) {
 
 		ctx.closePath()
 
+		let { x, y } = this
+
 		if (shape === 'cross') {
 
-			ctx.moveTo(this.x - crossSize, this.y)
-			ctx.lineTo(this.x + crossSize, this.y)
-			ctx.moveTo(this.x, this.y - crossSize)
-			ctx.lineTo(this.x, this.y + crossSize)
+			ctx.moveTo(x - crossSize, y)
+			ctx.lineTo(x + crossSize, y)
+			ctx.moveTo(x, y - crossSize)
+			ctx.lineTo(x, y + crossSize)
 
 			ctx.strokeStyle = color
 			ctx.stroke()
 
 		} else if (shape === 'dot') {
 
-			ctx.ellipse(this.x, this.y, dotSize / 2, dotSize / 2, 0, 0, 2 * Math.PI)
+			ctx.ellipse(x, y, dotSize / 2, dotSize / 2, 0, 0, 2 * Math.PI)
 			ctx.fillStyle = color
 			ctx.fill()
 
 		} else if (shape === 'circle') {
 
-			ctx.ellipse(this.x, this.y, circleSize / 2, circleSize / 2, 0, 0, 2 * Math.PI)
+			ctx.ellipse(x, y, circleSize / 2, circleSize / 2, 0, 0, 2 * Math.PI)
 			ctx.strokeStyle = color
 			ctx.stroke()
 
@@ -1240,7 +1281,7 @@ export class Sector extends Shape {
 	draw(ctx, stroke = 'black', fill = null) {
 
 		ctx.beginPath()
-		ctx.ellipse(this.x, this.y, this.radius, this.radius, 0, this.angleStart * Math.PI / 180, this.angleEnd * Math.PI / 180)
+		ctx.ellipse(this.x, this.y, this.radius, this.radius, 0, this.angleStart * TO_RADIANS, this.angleEnd * TO_RADIANS)
 		ctx.lineTo(this.x, this.y)
 
 		super.draw(ctx, stroke, fill)
