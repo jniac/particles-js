@@ -22,6 +22,17 @@ export function crossProduct(ux, uy, vx, vy) {
 
 }
 
+export function angle(ux, uy, vx, vy) {
+
+	let uLength = Math.sqrt(ux * ux + uy * uy)
+	let vLength = Math.sqrt(vx * vx + vy * vy)
+	let cos = dotProduct(ux, uy, vx, vy) / uLength / vLength
+	let angle = Math.acos(cos)
+
+	return crossProduct(ux, uy, vx, vy) > 0 ? angle : -angle
+
+}
+
 export function moveTowards(x, y, targetX, targetY, distance) {
 
 		let a = Math.atan2(targetY - y, targetX - x)

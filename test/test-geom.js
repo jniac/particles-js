@@ -110,6 +110,9 @@ function render() {
 	let str = `signedDistance: ${line3.signedDistance(mouse).toFixed(1)}, distance: ${line3.distance(mouse).toFixed(1)}`
 	ctx.fillText(str, nearestPoint.x + 10, nearestPoint.y + 2)
 
+	let angle = geomjs.angle(line1.vx, line1.vy, line2.vx, line2.vy)
+	console.log(angle * geomjs.TO_DEGREES)
+
 	let I, line2_refl
 
 	I = line1.intersection(line2)
