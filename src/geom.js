@@ -167,6 +167,13 @@ export function intersectionLineCircle(px, py, vx, vy, cx, cy, r) {
 
 }
 
+/**
+ * returns { u, v }
+ * Decompose the vector "src" onto the vector "dest".
+ * u is parallel to "dest"
+ * v is perpendicular (direct) to "dest"
+ * u + v = src
+ */
 export function decomposeUV(src, dest) {
 
 	dest = dest.clone().normalize()
