@@ -33,6 +33,29 @@ export function angle(ux, uy, vx, vy) {
 
 }
 
+/**
+ * returns { u, v }
+ * Decompose the vector "src" onto the vector "dest".
+ * u is parallel to "dest"
+ * v is perpendicular (direct) to "dest"
+ * u + v = src
+ */
+export function decomposeUV(src, dest) {
+
+	dest = dest.clone().normalize()
+
+	let dot = src.x * dest.x + src.y * dest.y
+	let det = src.x * dest.y - src.y * dest.x
+
+	return {
+
+		u: new Point(dest.x * dot, dest.y * dot),
+		v: new Point(dest.y * det, -dest.x * det),
+
+	}
+
+}
+
 export function moveTowards(x, y, targetX, targetY, distance) {
 
 		let a = Math.atan2(targetY - y, targetX - x)
@@ -175,29 +198,6 @@ export function intersectionLineCircle(px, py, vx, vy, cx, cy, r) {
 	let N2 = P2.clone().offset(-cx, -cy).normalize()
 
 	return { k1, k2, points:[P1, P2], normals:[N1, N2] }
-
-}
-
-/**
- * returns { u, v }
- * Decompose the vector "src" onto the vector "dest".
- * u is parallel to "dest"
- * v is perpendicular (direct) to "dest"
- * u + v = src
- */
-export function decomposeUV(src, dest) {
-
-	dest = dest.clone().normalize()
-
-	let dot = src.x * dest.x + src.y * dest.y
-	let det = src.x * dest.y - src.y * dest.x
-
-	return {
-
-		u: new Point(dest.x * dot, dest.y * dot),
-		v: new Point(dest.y * det, -dest.x * det),
-
-	}
 
 }
 
@@ -1307,5 +1307,39 @@ export class Sector extends Shape {
 		return this
 
 	}
+
+}
+
+
+
+
+
+
+export default {
+
+	TO_RADIANS,
+	TO_DEGREES,
+
+	dotProduct,
+	crossProduct,
+	angle,
+	decomposeUV,
+	moveTowards,
+	pointMoveTowards,
+
+	triangeIsDirect,
+	triangleContains,
+	quadContains,
+	sectorContains,
+	intersectionLineLine,
+	intersectionLineCircle,
+
+	Point,
+	Line,
+	Circle,
+	Sector,
+	Triangle,
+	Quad,
+	AABB,
 
 }
