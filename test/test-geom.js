@@ -110,8 +110,8 @@ function render() {
 	let str = `signedDistance: ${line3.signedDistance(mouse).toFixed(1)}, distance: ${line3.distance(mouse).toFixed(1)}`
 	ctx.fillText(str, nearestPoint.x + 10, nearestPoint.y + 2)
 
-	let angle = geomjs.angle(line1.vx, line1.vy, line2.vx, line2.vy)
-	console.log(angle * geomjs.TO_DEGREES)
+	let angle = geomjs.angle(line1.vx, line1.vy, line2.vx, line2.vy) * geomjs.TO_DEGREES
+	ctx.fillText(`angle: ${angle.toFixed(1)}°`, line1.p2x + 5, line1.p2y + 5)
 
 	let I, line2_refl
 
