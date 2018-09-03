@@ -10,6 +10,12 @@
 export const TO_RADIANS = Math.PI / 180
 export const TO_DEGREES = 180 / Math.PI
 
+export function distance(x, y) {
+
+	return Math.sqrt(x * x + y * y)
+
+}
+
 export function dotProduct(ux, uy, vx, vy) {
 
 	return ux * vx + uy * vy
@@ -24,9 +30,7 @@ export function crossProduct(ux, uy, vx, vy) {
 
 export function angle(ux, uy, vx, vy) {
 
-	let uLength = Math.sqrt(ux * ux + uy * uy)
-	let vLength = Math.sqrt(vx * vx + vy * vy)
-	let cos = dotProduct(ux, uy, vx, vy) / uLength / vLength
+	let cos = dotProduct(ux, uy, vx, vy) / distance(ux, uy) / distance(vx, vy)
 	let angle = Math.acos(cos)
 
 	return crossProduct(ux, uy, vx, vy) > 0 ? angle : -angle
