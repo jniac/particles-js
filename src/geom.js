@@ -756,6 +756,21 @@ export class Line {
 
 	}
 
+	get vAngle() {
+
+		let { vx, vy } = this
+		return Math.atan2(vy, vx)
+
+	}
+	set vAngle(value) {
+
+		let { vLength } = this
+
+		this.vx = vLength * Math.cos(value)
+		this.vy = vLength * Math.sin(value)
+
+	}
+
 	get P() { return new Point(this.px, this.py) }
 	set P(value) { value = Point.ensure(value); this.px = value.x; this.py = value.y }
 
